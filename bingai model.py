@@ -61,7 +61,7 @@ c_50 = 3.49  # anti-factor Xa activity producing 50% of the maximal response val
 y_0 = [dose_i / v_c, 0]  # initial conditions for anti-factor Xa activities
 
 # Define the time grid for simulation
-t = np.linspace(0, 6, 100)  # time points from 0 to 6 hours with 100 steps
+t = np.linspace(0, 100, 100)  # time points from 0 to 6 hours with 100 steps
 
 # Solve the pharmacokinetic model using scipy.integrate.odeint function
 y = odeint(pk_model, y_0, t, args=(
