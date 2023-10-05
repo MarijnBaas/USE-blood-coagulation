@@ -15,7 +15,7 @@ print(vci)
 
 dose_i = 25000   # initial bolus dose of heparin in IU
 dose_d = 5000  # multiple dose of heparin in IU
-t_d = 0  # dosing interval in hours
+t_d = 1  # dosing interval in hours
 v_c = vci  # volume of distribution of the central compartment in liters
 v_p = 2.23  # volume of distribution of the peripheral compartment in liters
 q = 4.67  # intercompartmental clearance in liters per hour
@@ -23,7 +23,7 @@ cl = 0.841  # elimination clearance in liters per hour
 
 def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
     c_c, c_p = y
-    input_t = dose_d/ v_c if t == t_d else 0
+    input_t = dose_d / v_c if t % t_d == 0 else 0
     dc_c_dt = input_t + q * (c_p / v_p - c_c / v_c) - (cl / v_c) * c_c
     dc_p_dt = q * (c_c / v_c - c_p / v_p)
 
