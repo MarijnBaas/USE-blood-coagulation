@@ -2,6 +2,10 @@ import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
+v_c_baseline = 3.1  # Baseline volume of distribution (mL/kg)
+b_vc_bw = 1.02 #regression coefficient fo body weight on Vc
+bw_i = 77.5 #body weight of the patient
+wi_vc = 0 #random effect of patient
 def define_vci(Vc_baseline, B_vc_bw, bw_i, wi_vc):
     vci = Vc_baseline + B_vc_bw * np.log10(bw_i / 70.0) + wi_vc
     return vci
@@ -9,10 +13,6 @@ def define_vci(Vc_baseline, B_vc_bw, bw_i, wi_vc):
 vci = define_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
 print(vci)
 
-v_c_baseline = 3.1  # Baseline volume of distribution (mL/kg)
-b_vc_bw = 1.02 #regression coefficient fo body weight on Vc
-bw_i = 77.5 #body weight of the patient
-wi_vc = 0 #random effect of patient
 dose_i = 25000   # initial bolus dose of heparin in IU
 dose_d = 5000  # multiple dose of heparin in IU
 t_d = 0  # dosing interval in hours
