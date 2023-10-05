@@ -15,11 +15,11 @@ bw_i = 77.5 #body weight of the patient
 wi_vc = 0 #random effect of patient
 
 def define_vci(Vc_baseline, B_vc_bw, bw_i, wi_vc):
-    Vci = Vc_baseline + B_vc_bw * np.log10(bw_i / 70.0) + wi_vc
-    return Vci
+    vci = Vc_baseline + B_vc_bw * np.log10(bw_i / 70.0) + wi_vc
+    return vci
 
-Vci = define_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
-print(Vci)
+vci = define_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
+print(vci)
 
 def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
     c_c, c_p = y
