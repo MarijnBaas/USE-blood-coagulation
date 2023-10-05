@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
+v_c_baseline = 3.1  # Baseline volume of distribution (mL/kg)
 dose_i = 25000   # initial bolus dose of heparin in IU
 dose_d = 5000  # multiple dose of heparin in IU
 t_d = 0  # dosing interval in hours
@@ -9,6 +10,16 @@ v_c = 3.1  # volume of distribution of the central compartment in liters
 v_p = 2.23  # volume of distribution of the peripheral compartment in liters
 q = 4.67  # intercompartmental clearance in liters per hour
 cl = 0.841  # elimination clearance in liters per hour
+b_vc_bw = 1.02 #regression coefficient fo body weight on Vc
+bw_i = 77.5 #body weight of the patient
+wi_vc = 0 #random effect of patient
+
+def define_vci(Vc_baseline, B_vc_bw, bw_i, wi_vc):
+    Vci = Vc_baseline + B_vc_bw * np.log10(bw_i / 70.0) + wi_vc
+    return Vci
+
+Vci = define_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
+print(Vci)
 
 def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
     c_c, c_p = y
@@ -33,5 +44,4 @@ plt.ylabel("Anti-factor Xa activity (IU/ml)")
 plt.title("Pharmacokinetic model of heparin")
 plt.legend()
 plt.show()
-
 
