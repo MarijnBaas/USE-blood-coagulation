@@ -15,7 +15,7 @@ print(vci)
 
 dose_i = 25000   # initial bolus dose of heparin in IU
 dose_d = 5000  # multiple dose of heparin in IU
-t_d = 1  # dosing interval in hours
+t_d = 2  # dosing interval in hours
 v_c = vci  # volume of distribution of the central compartment in liters
 v_p = 2.23  # volume of distribution of the peripheral compartment in liters
 q = 4.67  # intercompartmental clearance in liters per hour
@@ -44,4 +44,24 @@ plt.ylabel("Anti-factor Xa activity (IU/ml)")
 plt.title("Pharmacokinetic model of heparin")
 plt.legend()
 plt.show()
+
+
+def act_model(c_c, act0, emax, c50):
+    act = act0 + (emax * c_c) / (c50 + c_c)
+    return act
+
+act0 = 116 # baseline ACT in seconds
+emax = 720 # maximum effect of heparin on ACT in seconds
+c50 = 3.419
+
+act = act_model(c_c, act0, emax, c50)
+
+plt.plot(t, act, label="ACT")
+plt.xlabel("Time (hours)")
+plt.ylabel("Activated clotting time (seconds)")
+plt.title("Pharmacodynamic model of heparin")
+plt.legend()
+plt.show()
+
+
 
