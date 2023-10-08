@@ -1,26 +1,48 @@
-import numpy as np
+#import relevant libraries
 from scipy.integrate import odeint
+from scipy.integrate import solve_ivp
+import numpy as np
 import matplotlib.pyplot as plt
 
-v_c_baseline = 3.1  # Baseline volume of distribution (mL/kg)
-b_vc_bw = 1.02 #regression coefficient fo body weight on Vc
-bw_i = 77.5 #body weight of the patient
-wi_vc = 0 #random effect of patient
-def define_vci(Vc_baseline, B_vc_bw, bw_i, wi_vc):
-    vci = Vc_baseline + B_vc_bw * np.log10(bw_i / 70.0) + wi_vc
-    return vci
+# Define the parameters for the model
+v_c_baseline = 3.1 
+v_c = 3.1 
+v_p = 2.23 
+q = 4.67   
+c_l = 0.841  
+dosed_i = 30000.0  
+dosed_d = 0
+td = 1 
+b_vc_bw = 1.02 
+bw_i = 77.5 
+wi_vc = 0
 
-vci = define_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
-print(vci)
+#calculate patient specific central volume through bodyweight
+def patient_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc):
+    v_ci = v_c_baseline + b_vc_bw * np.log10(bw_i / 70.0) + wi_vc
+    return v_ci
 
-dose_i = 25000   # initial bolus dose of heparin in IU
-dose_d = 5000  # multiple dose of heparin in IU
-t_d = 2  # dosing interval in hours
-v_c = vci  # volume of distribution of the central compartment in liters
-v_p = 2.23  # volume of distribution of the peripheral compartment in liters
-q = 4.67  # intercompartmental clearance in liters per hour
-cl = 0.841  # elimination clearance in liters per hour
+v_ci = patient_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
 
+#solve the differential equations through solve_ivp
+def model(t, y):
+    c_c, c_p = y
+    input_t = dosed_i / v_c if t == td else 0.0
+    dCc_dt = input_t + q * (c_p / v_p - c_c / v_ci) - c_l / v_ci * c_c
+    dCp_dt = q * (c_c / v_ci - c_p / v_p)
+    return [dCc_dt, dCp_dt]
+
+initial_conditions = [dosed_i / v_c, 0.0]
+t_span = (0.0, 25.0)
+
+sol = solve_ivp(model, t_span, initial_conditions, t_eval=np.linspace(0.0, 25.0, 100))
+
+t = sol.t
+c_c = sol.y[0]
+c_p = sol.y[1]
+
+'''
+#solve the differential equation through odeint
 def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
     c_c, c_p = y
     input_t = dose_d / v_c if t % t_d == 0 else 0
@@ -29,39 +51,42 @@ def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
 
     return [dc_c_dt, dc_p_dt]
 
-initial_conditions = [dose_d / v_c, 0.0]
+initial_conditions = [dosed_i / v_c, 0.0]
 t = np.linspace(0, 10, 100)
 
-y = odeint(pk_model, initial_conditions, t, args=(dose_i, dose_d, t_d, v_c, v_p, q, cl))
+y = odeint(pk_model, initial_conditions, t, args=(dosed_i, dosed_d, td, v_c, v_p, q, c_l))
 
 c_c = y[:, 0]
 c_p = y[:, 1]
+'''
 
-plt.plot(t, c_c, label="Central")
-plt.plot(t, c_p, label="Peripheral")
-plt.xlabel("Time (hours)")
-plt.ylabel("Anti-factor Xa activity (IU/ml)")
-plt.title("Pharmacokinetic model of heparin")
+plt.plot(t, c_c/1000, label='c_c')
+plt.plot(t, c_p/1000, label='c_p')
+plt.xlabel('Time')
+plt.ylabel('Anti-factor Xa activity (IU/mL)')
 plt.legend()
 plt.show()
 
+#calculate ACT values
+ACT0 = 116.0  
+Emax = 720.0  
+C50 = 3490
 
-def act_model(c_c, act0, emax, c50):
-    act = act0 + (emax * c_c) / (c50 + c_c)
-    return act
+ACT = ACT0 + (Emax * c_c) / (C50 + c_c)
 
-act0 = 116 # baseline ACT in seconds
-emax = 720 # maximum effect of heparin on ACT in seconds
-c50 = 3.419
-
-act = act_model(c_c, act0, emax, c50)
-
-plt.plot(t, act, label="ACT")
-plt.xlabel("Time (hours)")
-plt.ylabel("Activated clotting time (seconds)")
-plt.title("Pharmacodynamic model of heparin")
+plt.plot(t, ACT, label='ACT', color='red')
+plt.xlabel('Time')
+plt.ylabel('ACT')
 plt.legend()
 plt.show()
+
+plt.plot(c_c/1000, ACT)
+plt.yticks(np.arange(0, 1100, step=250))
+plt.xlabel('Anti-factor Xa activity (IU/mL)')
+plt.ylabel('ACT (s)')
+plt.title('ACT vs Xa activity')
+plt.show()
+
 
 
 
