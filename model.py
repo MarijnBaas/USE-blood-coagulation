@@ -67,12 +67,17 @@ plt.ylabel('Anti-factor Xa activity (IU/mL)')
 plt.legend()
 plt.show()
 
-# calculate ACT values
+#calculate ACT values
 ACT0 = 116.0  
 Emax = 720.0  
 C50 = 3490
+def ACT(ACT0, Emax, C50, c_c):
+    """This function calculates the ACT values."""
+    ACT = ACT0 + (Emax * c_c) / (C50 + c_c)
+    return ACT
 
-ACT = ACT0 + (Emax * c_c) / (C50 + c_c)
+ACT = ACT(ACT0, Emax, C50, c_c)
+print(ACT)
 
 plt.plot(t, ACT, label='ACT', color='red')
 plt.xlabel('Time')
