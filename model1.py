@@ -68,7 +68,6 @@ y = odeint(pk_model, initial_conditions, t, args=(dosed_i, dosed_d, td, v_c, v_p
 
 c_c = y[:, 0]
 c_p = y[:, 1]
-initial_conditions = [dosed_i / v_c, 0.0]
 
 plt.plot(t, c_c / 1000, label='c_c')
 plt.plot(t, c_p / 1000, label='c_p')
