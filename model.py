@@ -1,4 +1,4 @@
-#import relevant libraries
+# import relevant libraries
 from scipy.integrate import odeint
 from scipy.integrate import solve_ivp
 import numpy as np
@@ -12,12 +12,12 @@ q = 4.67
 c_l = 0.841  
 dosed_i = 30000.0  
 dosed_d = 0
-td = 1 
+td = 1
 b_vc_bw = 1.02 
 bw_i = 77.5 
 wi_vc = 0
 
-#calculate patient specific central volume through bodyweight
+# calculate patient specific central volume through bodyweight
 def patient_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc):
     v_ci = v_c_baseline + b_vc_bw * np.log10(bw_i / 70.0) + wi_vc
     return v_ci
@@ -67,7 +67,7 @@ plt.ylabel('Anti-factor Xa activity (IU/mL)')
 plt.legend()
 plt.show()
 
-#calculate ACT values
+# calculate ACT values
 ACT0 = 116.0  
 Emax = 720.0  
 C50 = 3490
@@ -86,7 +86,3 @@ plt.xlabel('Anti-factor Xa activity (IU/mL)')
 plt.ylabel('ACT (s)')
 plt.title('ACT vs Xa activity')
 plt.show()
-
-
-
-
