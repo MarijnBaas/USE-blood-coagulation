@@ -1,10 +1,8 @@
 #import relevant libraries
 from scipy.integrate import odeint
-from scipy.integrate import solve_ivp
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
 
 data = pd.read_excel('Dataset Xa vs ACT goed.xlsx')
 Anti_Xa = list(data['Antifactor Xa (IU/mL)'])
@@ -32,22 +30,22 @@ def patient_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc):
 v_ci = patient_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
 
 #solve the differential equations through solve_ivp
-def model(t, y):
+def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
     c_c, c_p = y
-    input_t = dosed_i / v_c if t == td else 0.0
-    dCc_dt = input_t + q * (c_p / v_p - c_c / v_ci) - c_l / v_ci * c_c
-    dCp_dt = q * (c_c / v_ci - c_p / v_p)
-    return [dCc_dt, dCp_dt]
+    input_t = dose_d / v_c if t % t_d == 0 else 0
+    dc_c_dt = input_t + q * (c_p / v_p - c_c / v_c) - (cl / v_c) * c_c
+    dc_p_dt = q * (c_c / v_c - c_p / v_p)
+
+    return [dc_c_dt, dc_p_dt]
 
 initial_conditions = [dosed_i / v_c, 0.0]
-t_span = (0.0, 25.0)
+t = np.linspace(0, 25, 100)
 
-sol = solve_ivp(model, t_span, initial_conditions, t_eval=np.linspace(0.0, 25.0, 100))
+y = odeint(pk_model, initial_conditions, t, args=(dosed_i, dosed_d, td, v_c, v_p, q, c_l))
 
-t = sol.t
-c_c = sol.y[0]
-c_p = sol.y[1]
-
+c_c = y[:, 0]
+c_p = y[:, 1]
+initial_conditions = [dosed_i / v_c, 0.0]
 
 plt.plot(t, c_c/1000, label='c_c')
 plt.plot(t, c_p/1000, label='c_p')
@@ -58,10 +56,14 @@ plt.show()
 
 #calculate ACT values
 ACT0 = 116.0  
-Emax = 720.0  
+Emax = 600.0  
 C50 = 3490
+def ACT(ACT0, Emax, C50, c_c):
+    """This function calculates the ACT values."""
+    ACT = ACT0 + (Emax * c_c) / (C50 + c_c)
+    return ACT
 
-ACT = ACT0 + (Emax * c_c) / (C50 + c_c)
+ACT = ACT(ACT0, Emax, C50, c_c)
 
 plt.plot(t, ACT, label='ACT', color='red')
 plt.xlabel('Time (h)')
