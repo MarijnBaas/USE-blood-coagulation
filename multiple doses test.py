@@ -89,8 +89,6 @@ t1 = 10
 # define a vector of time points where the solution is computed with a fixed step size of 0.01
 t_eval = np.linspace(t0, t1, int((t1 - t0) / 0.01) + 1)
 
-method = 'RK45'
-
 # solve the differential equations
 sol = solve_ivp(pk_model, (t0, t1), initial_conditions, args=(dosed_i, dosed_d, td, v_c, v_p, q, c_l),
                 dense_output=True, t_eval=t_eval)
