@@ -17,8 +17,8 @@ v_p = 2.23
 q = 4.67   
 c_l = 0.841  
 dosed_i = 30000.0  
-dosed_d = 5000.0
-td = 1 
+dosed_d = 10000.0
+td = 2
 b_vc_bw = 1.02 
 bw_i = 77.5 
 wi_vc = 0
@@ -33,13 +33,13 @@ v_ci = patient_vci(v_c_baseline, b_vc_bw, bw_i, wi_vc)
 #solve the differential equations through solve_ivp
 def pk_model(y, t, dose_i, dose_d, t_d, v_c, v_p, q, cl):
     c_c, c_p = y
-    input_t = dose_d / v_c if math.floor(t) % t_d == 0 else 0
+    input_t = dose_d / v_c if int(t) % t_d == 0 else 0
     dc_c_dt = input_t + q * (c_p / v_p - c_c / v_c) - (cl / v_c) * c_c
     dc_p_dt = q * (c_c / v_c - c_p / v_p)
     return [dc_c_dt, dc_p_dt]
 
 initial_conditions = [dosed_i / v_c, 0.0]
-t = np.linspace(0, 25, 100)
+t = np.linspace(0, 25, 101)
 
 y = odeint(pk_model, initial_conditions, t, args=(dosed_i, dosed_d, td, v_c, v_p, q, c_l))
 
@@ -73,13 +73,13 @@ plt.show()
 
 c_c = c_c/1000
 
-plt.plot(c_c, ACT)
-plt.scatter(Anti_Xa_data, ACT_data, s=5, color='red')
-plt.yticks(np.arange(0, 1100, step=250))
-plt.xlabel('Anti-factor Xa activity (IU/mL)')
-plt.ylabel('ACT (s)')
-plt.title('ACT vs Xa activity')
-plt.show()
+#plt.plot(c_c, ACT)
+#plt.scatter(Anti_Xa_data, ACT_data, s=5, color='red')
+#plt.yticks(np.arange(0, 1100, step=250))
+#plt.xlabel('Anti-factor Xa activity (IU/mL)')
+#plt.ylabel('ACT (s)')
+#plt.title('ACT vs Xa activity')
+#plt.show()
 
 
 c_c = sorted(c_c)
@@ -125,4 +125,4 @@ def goodness_of_fit(ACT_data, Anti_Xa_data, c_c, ACT):
     plt.scatter(Anti_Xa_estimates,Anti_Xa_data, s=7, color='red')
     plt.show()
 
-goodness_of_fit(ACT_data, Anti_Xa_data, c_c, ACT)
+#goodness_of_fit(ACT_data, Anti_Xa_data, c_c, ACT)
