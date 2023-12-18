@@ -1,0 +1,27 @@
+from tkinter import *
+
+root = Tk()
+root.title('Heparin management')
+root.resizable(width=FALSE, height=FALSE)
+root.geometry('{}x{}'.format(1536, 864))
+
+# Top frame
+top_frame1 = Frame(root, bg='white', width=1536, height=432)
+top_frame1.grid(row=0, column=0, columnspan=2)
+
+
+# creating black lines between windows
+center_frame = Frame(root, bg='black', width=1536, height=432, pady=3)
+center_frame.grid(row=1, column=0, columnspan=2)
+ctr_mid = Frame(root, bg='black', width=3, height=432, padx=3)
+ctr_mid.grid(row=1, column=0, columnspan=2)
+
+#Bottom frame
+ctr_left = Frame(center_frame, bg='white', width=768, height=432)
+ctr_left.grid(column=0, row=0)
+ctr_right = Frame(center_frame, bg='white', width=768, height=432)
+ctr_right.grid(column=1, row=0)
+
+
+
+root.mainloop()
