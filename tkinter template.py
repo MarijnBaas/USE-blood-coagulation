@@ -24,18 +24,21 @@ class App(customtkinter.CTk):
         self.tabview = customtkinter.CTkTabview(self, anchor="nw")
         self.tabview.grid(row=0, column=1, padx=(20, 0), sticky="nsew")
 
-        # create a canvas to hold the image
-        canvas = tk.Canvas(tabview.tab("Graph 1"))
-        image = Image.open("chart1.jpg")
-        image = ImageTk.PhotoImage(image)
-        canvas.create_image(0, 0, image=image, anchor="nw")
-        canvas.grid(row=0, column=0, sticky="nsew")
-
         self.tabview.add("Graph 1")
         self.tabview.add("Graph 2")
         self.tabview.add("Graph 3")
         self.tabview.tab("Graph 1").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
         self.tabview.tab("Graph 2").grid_columnconfigure(0, weight=1)
+
+        image = customtkinter.CTkImage(light_image=Image.open("chart1.jpg"),
+                             dark_image=Image.open("chart1.jpg"), size=(1000, 600))
+
+        # create a label with the image object and place it inside the tab
+        label = customtkinter.CTkLabel(self.tabview.tab("Graph 1"), image=image)
+        label.grid(row=0, column=0)
+
+        self.input_frame = customtkinter.CTkFrame(self)
+        self.input_frame.grid(row=0, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
 
         # set default values
 
