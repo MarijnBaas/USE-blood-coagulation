@@ -16,12 +16,12 @@ class App(customtkinter.CTk):
         self.geometry(f"{1100}x{580}")
 
         # configure grid layout (4x4)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure((2, 3), weight=0)
-        self.grid_rowconfigure((0, 1), weight=1)
+        self.grid_columnconfigure(1, weight=0)
+        self.grid_columnconfigure((2), weight=1)
+        self.grid_rowconfigure((0, 1), weight=0)
 
         # create tabview
-        self.tabview = customtkinter.CTkTabview(self, anchor="nw")
+        self.tabview = customtkinter.CTkTabview(self, anchor="nw", width = 1000, height = 450)
         self.tabview.grid(row=0, column=1, padx=(20, 0), sticky="nsew")
 
         self.tabview.add("Graph 1")
@@ -31,7 +31,7 @@ class App(customtkinter.CTk):
         self.tabview.tab("Graph 2").grid_columnconfigure(0, weight=1)
 
         image = customtkinter.CTkImage(light_image=Image.open("chart1.jpg"),
-                             dark_image=Image.open("chart1.jpg"), size=(1000, 600))
+                             dark_image=Image.open("chart1.jpg"), size=(100, 100))
 
         # create a label with the image object and place it inside the tab
         label = customtkinter.CTkLabel(self.tabview.tab("Graph 1"), image=image)
