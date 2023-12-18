@@ -154,12 +154,15 @@ root.title('Anti-factor Xa and ACT Simulation')
 root.geometry("1920x1080")
 
 # Create a frame to hold the plots
-plot_frame = tk.Frame(root)
-plot_frame.pack()
+plot1_frame = tk.Frame(root)
+plot2_frame = tk.Frame(root)
+plot1_frame.pack()
+plot2_frame.pack()
 
 # Create buttons for the anti-factor Xa plot and ACT plot
-antifactor_xa_button = tk.Button(plot_frame, text='Anti-factor Xa Activity', command=lambda: plot_antifactor_xa().get_tk_widget().pack(side='left'))
-act_button = tk.Button(plot_frame, text='ACT', command=lambda: plot_act().get_tk_widget().pack(side='left'))
+antifactor_xa_button = tk.Button(plot1_frame, text='Anti-factor Xa Activity', command=lambda: plot_antifactor_xa().get_tk_widget().pack(side='left'))
+act_button = tk.Button(plot2_frame, text='ACT', command=lambda: plot_act().get_tk_widget().pack(side='right'))
+
 
 # Pack the buttons
 antifactor_xa_button.pack()
