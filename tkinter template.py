@@ -13,7 +13,7 @@ class App(customtkinter.CTk):
 
         # configure window
         self.title("Blood Coagulation Digital Twin GUI")
-        self.geometry(f"{1100}x{580}")
+        self.state("zoomed")
 
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=0)
